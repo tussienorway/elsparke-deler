@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elsparke-deler: gjenbruk av display, kontroller og batteri</title>
+<meta name="description" content="Praktisk norsk guide til gjenbruk og kombinasjon av deler fra elsykler og elsparkesykler: display, kontroller, batteri, plugger og måling med multimeter.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#innhold">Hopp til innholdet</a>
+<header class="top">
+  <h1>Elsparke-deler</h1>
+  <p>Gjenbruk av display, kontroller, batteri og plugger fra elsykler og elsparkesykler. Hva passer sammen, hva gjør det ikke, og hvordan du finner ut av det med et multimeter.</p>
+</header>
+<nav class="toc" aria-label="Innhold">
+  <a href="#kort">Kort fortalt</a>
+  <a href="#passer">Hva passer</a>
+  <a href="#display">Display</a>
+  <a href="#plugger">Plugger</a>
+  <a href="#batteri">Batteri</a>
+  <a href="#sparkesykler">Sparkesykler</a>
+  <a href="#multimeter">Multimeter</a>
+  <a href="#sjekkliste">Sjekkliste</a>
+  <a href="#ai-hjelp">AI-hjelp</a>
+  <a href="#sikkerhet">Sikkerhet</a>
+  <a href="#lov">Regler</a>
+  <a href="#ordliste">Ordliste</a>
+  <a href="#kilder">Kilder</a>
+</nav>
+
+<main id="innhold">
+
+<section id="kort">
+<h2>Kort fortalt</h2>
+<p>Det er mye som <em>kan</em> kobles sammen, men ikke alt er kompatibelt. Et multimeter forteller deg hvilken ledning som er pluss, minus og signal. Det forteller deg <strong>ikke</strong> hvilket «språk» et display og en kontroller snakker med hverandre. Der stopper det ofte.</p>
+<div class="box ok">
+<strong>Dette går som regel bra</strong> når spenningen stemmer: motor med kontroller, gasshendel, bremsebrytere, lys, enkle bryterpaneler, og batteri med lader som er laget for nøyaktig samme cellesammensetning.
+</div>
+<div class="box warn">
+<strong>Dette er ofte ikke kompatibelt</strong>: display fra ett merke mot kontroller fra et annet (for eksempel King-Meter mot Bafang eller Xiaomi), og deler fra sparkesykler der kontroller, display og batteri er laget for å snakke bare med hverandre.
+</div>
+<div class="box stop">
+<strong>Stopp</strong>: aldri koble sammen deler med ulik systemspenning uten å sjekke merkingen, aldri lad et batteri med en lader for en annen spenning, og aldri bruk deler fra delesparkesykler som Voi. De tilhører operatøren.
+</div>
+<p>Merket <span class="uncertain">usikkert</span> betyr at vi ikke har funnet en pålitelig kilde. Sjekk selv før du stoler på det.</p>
+</section>
+
+<section id="passer">
+<h2>Hva passer sammen, og hva gjør det ikke?</h2>
+<p>For å koble to deler sammen må <strong>fire ting</strong> stemme. Pluggen er bare den ene.</p>
+<ol>
+  <li><strong>Spenning.</strong> Systemet har én nominell spenning, for eksempel 24, 36, 48 eller 52 V. Alt som henger på batteriet (kontroller, display, lys som går direkte på batteriet) må tåle full ladespenning, som er høyere enn tallet på merket. Se <a href="#batteri">batteri</a>.</li>
+  <li><strong>Strøm og effekt.</strong> Kontrolleren må tåle det motoren trekker, og batteriet (med BMS) må kunne levere det kontrolleren trekker. Ledninger og plugger må tåle strømmen.</li>
+  <li><strong>Protokoll.</strong> Display og kontroller snakker sammen med et digitalt «språk» over en datalinje (UART, noen ganger CAN). Like plugger og like farger betyr ikke likt språk.</li>
+  <li><strong>Pinnerekkefølge.</strong> Like plugger kan ha ulik kobling inni. Fargene på ledningene er ikke en felles standard.</li>
+</ol>
+<div class="table-wrap">
+<table>
+<caption>Typiske deler og hvor lett de lar seg flytte</caption>
+<thead><tr><th>Del</th><th>Vanligvis lett å flytte?</th><th>Det som må stemme</th></tr></thead>
+<tbody>
+<tr><td>Gasshendel (3 ledninger)</td><td>Ja, oftest</td><td>Typisk 5 V, jord og signal. Sjekk at kontrolleren gir 5 V, og at signalområdet passer.</td></tr>
+<tr><td>Bremsebryter (bremsekutt)</td><td>Ja, oftest</td><td>Om bryteren er normalt åpen eller normalt lukket, og om den trenger strøm (hallbasert).</td></tr>
+<tr><td>Navmotor</td><td>Ofte</td><td>Spenning, at kontrolleren har hallinngang (5 tynne ledninger) eller kan kjøre sensorløst, og strøm.</td></tr>
+<tr><td>Kontroller</td><td>Noen ganger</td><td>Spenning (kondensatorer og transistorer må tåle full ladespenning), strøm, protokoll mot display, og om den krever kommunikasjon med batteriet.</td></tr>
+<tr><td>Display (for eksempel KM529)</td><td>Sjelden mellom merker</td><td>Samme protokoll som kontrolleren. Uten det viser det ingenting nyttig, eller en feilkode.</td></tr>
+<tr><td>Batteri</td><td>Med forsiktighet</td><td>Samme cellesammensetning (for eksempel 13S), nok strøm, fungerende BMS og en lader for nøyaktig den pakken.</td></tr>
+<tr><td>Deler fra merkesparkesykler (Xiaomi, Ninebot og lignende)</td><td>Sjelden utenfor egen modell</td><td>Proprietær kommunikasjon mellom display/«dashboard», kontroller og ofte batteri.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="display">
+<h2>Display og styrepanel</h2>
+
+<h3>King-Meter KM529-LCD</h3>
+<p>KM529 er et lite LCD-display med knappene M, + og −. Ifølge produsentens brukerveiledning slår du det på og av ved å holde M i 2 sekunder, og da slås kontrolleren på eller av samtidig.<sup><a href="#k1" aria-label="Kilde 1">[1]</a></sup></p>
+<div class="table-wrap">
+<table>
+<caption>KM529: ledningene i displaykabelen, ifølge King-Meters brukerveiledning<sup><a href="#k1" aria-label="Kilde 1">[1]</a></sup></caption>
+<thead><tr><th>Nr.</th><th>Farge</th><th>Funksjon</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Rød (VCC)</td><td>Strøm +</td></tr>
+<tr><td>2</td><td>Blå (K)</td><td>Bryter (slår på kontrolleren)</td></tr>
+<tr><td>3</td><td>Svart (GND)</td><td>Jord</td></tr>
+<tr><td>4</td><td>Grønn (RX)</td><td>Data inn til displayet</td></tr>
+<tr><td>5</td><td>Gul (TX)</td><td>Data ut fra displayet</td></tr>
+</tbody>
+</table>
+</div>
+<ul>
+  <li>Veiledningen sier selv at fargene ofte ikke kan ses fordi kabelen har vanntett plugg.<sup><a href="#k1" aria-label="Kilde 1">[1]</a></sup> Mål, ikke gjett.</li>
+  <li>Strekkoden på KM529 har et eget siffer for batterispenning: 2 betyr 24 V, 3 betyr 36 V og 4 betyr 48 V. Manualen viser hvor i strekkoden sifferet står.<sup><a href="#k1" aria-label="Kilde 1">[1]</a></sup> Sjekk det før du kobler til.</li>
+  <li>I innstillingsmenyen (hold + og − i 2 sekunder) kan fartsgrensen settes fra 12 til 40 km/t. Standard er 25 km/t.<sup><a href="#k2" aria-label="Kilde 2">[2]</a></sup> Setter du den over 25 km/t på en elsykkel, er den etter loven ikke lenger en sykkel. Se <a href="#lov">regler</a>.</li>
+  <li>«Push»-funksjonen gir motordrift på 6 km/t når du triller sykkelen.<sup><a href="#k2" aria-label="Kilde 2">[2]</a></sup> Det tilsvarer oppstartshjelpen loven tillater.</li>
+  <li>KM529 finnes med ulike protokoller (UART som standard, også CAN og LIN ifølge forhandlere).<sup><a href="#k2" aria-label="Kilde 2">[2]</a></sup> To KM529 er altså ikke nødvendigvis like inni.</li>
+  <li>Feilkode 30 betyr feil i kommunikasjonen mellom display og kontroller. Vanlig årsak er feil kobling eller at protokollen ikke stemmer.<sup><a href="#k2" aria-label="Kilde 2">[2]</a></sup></li>
+  <li>Hvilken spenning «Strøm +» har (full batterispenning eller lavere) står ikke i veiledningen. På mange slike systemer får displayet full batterispenning fra kontrolleren og sender den tilbake på bryterledningen for å slå kontrolleren på.<sup><a href="#k7" aria-label="Kilde 7">[7]</a></sup> <span class="uncertain">usikkert for KM529</span> Mål det.</li>
+</ul>
+
+<h3>Fargene er ikke standard</h3>
+<p>Sammenlign KM529-tabellen over med en vanlig oversikt over 5-pinners displaypinner: der står grønn som data ut og gul som data inn, altså motsatt.<sup><a href="#k3" aria-label="Kilde 3">[3]</a></sup> Et annet system (Bafang/KT/Lishui med Higo-plugg) bruker oransje, hvit, brun, grønn og svart, der brun er batteripluss.<sup><a href="#k5" aria-label="Kilde 5">[5]</a></sup> Konklusjonen er enkel: <strong>farger er et hint, ikke et fasitsvar</strong>.</p>
+
+<h3>LED-styrepanel med LOW/MED/HIGH</h3>
+<p>Enkle panel med av/på-knapp, MODE og lamper for lys og LOW/MED/HIGH finnes fra mange produsenter, ofte uten tydelig merke. Noen er rene bryterpanel, andre snakker med kontrolleren over en dataledning. <span class="uncertain">usikkert</span> Vi har ikke funnet et verifiserbart koblingsskjema for et bestemt umerket panel. Se etter modellnummer på baksiden eller på kabelen, og les kontrollerens merkelapp.</p>
+
+<h3>Protokoller: derfor virker ikke «alt med alt»</h3>
+<div class="table-wrap">
+<table>
+<caption>Noen kjente displayprotokoller (eksempler, ikke komplett)</caption>
+<thead><tr><th>System</th><th>Hva vi vet</th><th>Kilde</th></tr></thead>
+<tbody>
+<tr><td>King-Meter (KM5S-protokoll med flere)</td><td>King-Meters displayer brukes med kontrollere som støtter samme protokoll. Feil protokoll gir feilkode 30.</td><td><a href="#k1" aria-label="Kilde 1">[1]</a> <a href="#k2" aria-label="Kilde 2">[2]</a></td></tr>
+<tr><td>Kunteng (KT) med LCD3 og lignende</td><td>Eget pakkeformat, dokumentert av hobbymiljøet. Det finnes åpen fastvare for disse.</td><td><a href="#k8" aria-label="Kilde 8">[8]</a> <a href="#k9" aria-label="Kilde 9">[9]</a></td></tr>
+<tr><td>Bafang</td><td>Displayet spør, kontrolleren svarer. Lesing starter med byte 0x11, skriving med 0x16.</td><td><a href="#k10" aria-label="Kilde 10">[10]</a></td></tr>
+<tr><td>Xiaomi / Ninebot</td><td>UART på 115200 baud med egen adressering mellom styrepanel, kontroller og batteri. Xiaomi-pakker starter med 55 AA, Ninebot-pakker med 5A A5, og kommandoene er ikke helt like.</td><td><a href="#k11" aria-label="Kilde 11">[11]</a> <a href="#k25" aria-label="Kilde 25">[25]</a></td></tr>
+</tbody>
+</table>
+</div>
+<p>Selv om pinnene er koblet riktig, vil to slike systemer ikke forstå hverandre. Mange KT-kontrollere kan kjøre uten display ved å koble bryterledningen til batteripluss, men da med begrenset funksjon.<sup><a href="#k7" aria-label="Kilde 7">[7]</a></sup> Feil ledning gir full batterispenning inn på en dataledning, og det ødelegger den.</p>
+<p><strong>Passer ikke displayet? Du har tre valg:</strong> kjør uten display hvis kontrolleren tillater det, kjøp et display som er laget for akkurat den kontrolleren, eller bytt til en kontroller som støtter displayet ditt.</p>
+<div class="box ok"><strong>Alternativ:</strong> Vil du ha full kontroll, finnes åpne kontrollere som <a href="https://vesc-project.com/">VESC</a><sup><a href="#k23" aria-label="Kilde 23">[23]</a></sup> og åpen fastvare for enkelte KT-oppsett.<sup><a href="#k9" aria-label="Kilde 9">[9]</a></sup> Da velger du display ut fra kontrolleren, ikke omvendt.</div>
+</section>
+
+<section id="plugger">
+<h2>Plugger: Julet, Higo og andre</h2>
+<ul>
+  <li><strong>Julet og Higo</strong> er runde, vanntette plugger med 2 til 9 pinner, brukt på display, gass, bremser, lys og motor.<sup><a href="#k4" aria-label="Kilde 4">[4]</a></sup></li>
+  <li>Julet-plugger har ofte fargekode etter <em>antall pinner</em>, ikke funksjon: rød for 2, gul for 3, blå for 4, grønn for 5, lilla eller svart for 6.<sup><a href="#k6" aria-label="Kilde 6">[6]</a></sup></li>
+  <li>Samme plugg med samme antall pinner kan være koblet forskjellig fra leverandør til leverandør.<sup><a href="#k4" aria-label="Kilde 4">[4]</a></sup></li>
+  <li>Pinnene nummereres ut fra styreknasten på pluggen. Én beskrivelse: hold pluggen med knasten ned mot deg; på hunnplugg er pinne 1 rett til høyre for knasten, og så teller du mot klokka.<sup><a href="#k5" aria-label="Kilde 5">[5]</a></sup> Andre kilder kan telle annerledes, så tegn pluggen og skriv ned hvordan <em>du</em> teller.</li>
+  <li>Julet-pluggene i én kilde er oppgitt til 2 A per pinne.<sup><a href="#k6" aria-label="Kilde 6">[6]</a></sup> De er altså ikke laget for motorstrøm.</li>
+</ul>
+<p><strong>Fem tynne ledninger i rød, svart, blå, gul og grønn</strong> fra en navmotor er som regel hallsensorene: rød 5 V, svart jord, og tre signaler.<sup><a href="#k5" aria-label="Kilde 5">[5]</a></sup> Tre tykke ledninger er motorfasene.</p>
+</section>
+
+<section id="batteri">
+<h2>Batteri, BMS og lader</h2>
+<p>De fleste batterier til elsykler og elsparkesykler er litium-ion med celler på 3,6 V nominelt og 4,2 V fulladet. Fulladet spenning for pakken er antall celler i serie ganger 4,2 V.<sup><a href="#k12" aria-label="Kilde 12">[12]</a></sup></p>
+<div class="table-wrap">
+<table>
+<caption>Vanlige litium-ion-pakker (celler med 4,2 V fulladet)</caption>
+<thead><tr><th>Kalles</th><th>Celler i serie</th><th>Fulladet</th><th>Lader må gi</th></tr></thead>
+<tbody>
+<tr><td>24 V</td><td>7S</td><td>29,4 V</td><td>29,4 V</td></tr>
+<tr><td>36 V</td><td>10S</td><td>42,0 V</td><td>42,0 V</td></tr>
+<tr><td>48 V</td><td>13S</td><td>54,6 V</td><td>54,6 V</td></tr>
+<tr><td>52 V</td><td>14S</td><td>58,8 V</td><td>58,8 V</td></tr>
+<tr><td>60 V</td><td>16S</td><td>67,2 V</td><td>67,2 V</td></tr>
+</tbody>
+</table>
+</div>
+<ul>
+  <li><strong>Laderen må passe nøyaktig.</strong> En 52 V-lader (58,8 V) på en 48 V-pakke (13S) overlader cellene.<sup><a href="#k12" aria-label="Kilde 12">[12]</a></sup> Står det «42V» på laderen, er den for 36 V.</li>
+  <li>Andre kjemier (for eksempel LiFePO4) har andre cellespenninger og trenger egen lader. <span class="uncertain">sjekk merkingen</span></li>
+  <li><strong>BMS</strong> (batteristyringen) beskytter mot overlading, dyputlading, kortslutning og for høy strøm. Et batteri uten fungerende BMS skal ikke brukes.</li>
+  <li>Noen merkesparkesykler har batteri som snakker med kontrolleren over en dataledning.<sup><a href="#k11" aria-label="Kilde 11">[11]</a></sup> Om kontrolleren nekter å kjøre uten den, varierer. <span class="uncertain">usikkert per modell</span></li>
+  <li>Spenningen rett fra batteriet sier lite om helsen. Et batteri kan vise riktig spenning og likevel ha skadde celler.</li>
+  <li>Bruk sikring på pluss nær batteriet, og en hovedbryter du lett når.</li>
+  <li>Noen batterier har egen ladeport som er koblet annerledes gjennom BMS-en enn utgangen til motoren. Ikke ta strøm ut gjennom ladeporten. <span class="uncertain">varierer per batteri</span></li>
+</ul>
+<div class="box stop"><strong>Ikke koble to batterier sammen</strong>, verken i parallell eller i serie, med mindre de er like og har samme ladenivå og BMS-ene er laget for det. Ulik spenning gir svært store utjevningsstrømmer som kan gi brann. Serie gir høyere spenning enn noe av utstyret er laget for.</div>
+<div class="box stop"><strong>Ikke åpne, skjær i eller lodd på et litium-batteri</strong> hvis du ikke vet nøyaktig hva du gjør. DSB fraråder å modifisere eller reparere elsparkesykkelen selv, fordi det kan ødelegge sikkerheten som er bygd inn.<sup><a href="#k13" aria-label="Kilde 13">[13]</a></sup> Denne siden handler om akkurat den typen ombygging. Vær ærlig med deg selv om risikoen, og la batteriet være den delen du <em>ikke</em> eksperimenterer med.</div>
+</section>
+
+<section id="sparkesykler">
+<h2>Sparkesykler: Hiley, Xiaomi, Ninebot og Voi</h2>
+<h3>Egne sparkesykler (Hiley og lignende)</h3>
+<p>Hiley er et merke som selges i Norge, med modeller fra lovlig sperret 20 km/t og opp til kraftige modeller på flere kilowatt.<sup><a href="#k22" aria-label="Kilde 22">[22]</a></sup> (Vi går ut fra at det er dette merket som menes med «Hiels». <span class="uncertain">usikkert</span>)</p>
+<ul>
+  <li>Vi har ikke funnet offentlige koblingsskjema eller protokollbeskrivelser for Hiley-display og -kontroller. <span class="uncertain">usikkert</span> Mange sparkesykler har display og kontroller som er parret med en egen protokoll, så regn med at displayet bare virker med sin egen kontroller.</li>
+  <li>Motor, gass og bremser kan ofte gjenbrukes med en annen kontroller, så lenge spenning og strøm stemmer.</li>
+  <li>Kraftige sparkesykler bruker ofte 48 V eller mer. Sjekk merkelappen på batteriet og laderen.</li>
+</ul>
+<h3>Xiaomi og Ninebot</h3>
+<p>Disse bruker en egen seriell protokoll mellom styrepanel, kontroller og batteri. Den er dokumentert av hobbymiljøet.<sup><a href="#k11" aria-label="Kilde 11">[11]</a></sup> Et KM529 eller et annet generisk display virker ikke direkte med dem.</p>
+<h3>Delesparkesykler (Voi, Ryde, Tier/Dott og andre)</h3>
+<div class="box stop">
+<p><strong>Ikke ta deler fra delesparkesykler, og ikke kjøp dem.</strong> De eies av utleieselskapet, også når de ligger slengt. Å ta dem eller deler av dem kan være tyveri,<sup><a href="#k19" aria-label="Kilde 19">[19]</a></sup> og å kjøpe eller ta imot slike deler kan være heleri.<sup><a href="#k20" aria-label="Kilde 20">[20]</a></sup> Finner du en, gi beskjed til selskapet.</p>
+<p>Teknisk er de dessuten dårlige delekilder: de er spesialbygd for utleie, med egne komponenter og en fjernstyrt modul for sporing og låsing.<sup><a href="#k21" aria-label="Kilde 21">[21]</a></sup> <span class="uncertain">detaljer om låsing varierer per modell</span></p>
+</div>
+<p>Deler som operatører selv selger, for eksempel brukte sparkesykler ved utfasing, er en annen sak. Ta vare på kvitteringen.</p>
+</section>
+
+<section id="multimeter">
+<h2>Finn ledningene med multimeter, steg for steg</h2>
+<div class="box warn">Multimeteret finner pluss, minus og signal. Det finner ikke protokollen. Les <a href="#display">display</a> først, så du ikke bruker en kveld på en kombinasjon som aldri kan virke.</div>
+<h3>Du trenger</h3>
+<ul>
+  <li>Et digitalt multimeter med likespenning (V⎓), motstand (Ω) og helst gjennomgangstest med pip.</li>
+  <li>Tynne målespisser eller nåler som passer i pluggen, uten å bøye pinnene.</li>
+  <li>Teip og penn til å merke ledningene.</li>
+</ul>
+<h3>A. Uten strøm (batteriet frakoblet)</h3>
+<ol>
+  <li>Koble fra batteriet. Vent et minutt, kontrolleren har kondensatorer som kan holde på spenning.</li>
+  <li>Still multimeteret på gjennomgang eller Ω.</li>
+  <li>Finn <strong>jord</strong>: mål fra hver pinne i pluggen til kontrollerens batteriminus (svart, tykk). Pinnen med tilnærmet 0 Ω er jord.<sup><a href="#k5" aria-label="Kilde 5">[5]</a></sup> Har du bare en løs kabel uten kontroller, følg ledningene til en del der jord er kjent, eller vent med å konkludere.</li>
+  <li>Finn hvilke pinner som går til hvilke ledninger i den andre enden (gjennomgang). Skriv opp i en tabell.</li>
+  <li><strong>Motorfaser</strong>: Mål motstand mellom de tre tykke ledningene, to og to. Alle tre parene skal gi omtrent lik og svært lav verdi. Et vanlig multimeter klarer ofte ikke å vise så lave verdier presist, så bruk det mest til å finne brudd eller kortslutning mot motorhuset (skal være uendelig).</li>
+</ol>
+<h3>B. Med strøm (forsiktig)</h3>
+<ol>
+  <li>Bruk sikring. Ha hjulet løftet fra bakken.</li>
+  <li>Kontrolleren har store kondensatorer. På 48 V og over gir tilkobling ofte en kraftig gnist som sliter på kontaktene. Vanlig praksis er en antigniststikk eller en forladingsmotstand. <span class="uncertain">praksis, ikke kildebelagt her</span></li>
+  <li>Still på likespenning, et område over batteriets fulladede spenning.</li>
+  <li>Sett svart målespiss på jord (funnet i A). Mål hver pinne med rød spiss. Ikke la målespissene kortslutte to pinner.</li>
+  <li>Pinnen med full batterispenning er batteripluss. En pinne med cirka 5 V er forsyning til gass eller sensorer.</li>
+  <li><strong>Gasshendel</strong>: med 5 V og jord på plass vil signalledningen endre spenning når du vrir. Typisk ca. 0,8 V i ro og opp mot ca. 4 V på fullt. <span class="uncertain">typiske verdier, varierer</span></li>
+  <li><strong>Hallsensorer</strong>: med kontrolleren påslått og pluggen koblet til, mål «bakfra»: før en tynn nål inn langs ledningen bak tetningen til den treffer metallet i pluggen. Ikke rør gassen, og drei hjulet sakte for hånd. Hver av de tre signalledningene skal veksle mellom nær 0 V og nær 5 V. Står én fast, er sensoren eller ledningen trolig defekt.</li>
+  <li><strong>Datalinjer</strong> (RX/TX) viser ofte en spenning som hopper eller ligger på et mellomnivå når det er trafikk. Multimeteret kan antyde at det er aktivitet, men ikke hva som sies.</li>
+</ol>
+<div class="box stop">Mål aldri motstand på en krets med strøm i. Ikke koble batteripluss til en pinne «for å se hva som skjer». Det er den raskeste måten å ødelegge et display på.</div>
+</section>
+
+<section id="sjekkliste">
+<h2>Sjekkliste før du kobler sammen</h2>
+<ul class="checklist">
+  <li>Systemspenningen er lest av på merkelappen til batteri, kontroller, motor og display, og den stemmer.</li>
+  <li>Kontrolleren tåler batteriets <em>fulladede</em> spenning, ikke bare den nominelle.</li>
+  <li>Laderen er laget for nøyaktig samme pakke (for eksempel 13S og 54,6 V).</li>
+  <li>Batteriet har fungerende BMS og er uten bulker, lukt, fukt eller sprekker.</li>
+  <li>Display og kontroller bruker samme protokoll, eller du klarer deg uten display.</li>
+  <li>Hver pinne er målt og skrevet ned. Jord og pluss er bekreftet.</li>
+  <li>Sikring sitter på pluss nær batteriet, og det finnes en hovedbryter.</li>
+  <li>Første test skjer med hjulet løftet, på et ikke-brennbart underlag, med en vei ut.</li>
+  <li>Bremsene virker, og bremsekutt kutter motoren.</li>
+  <li>Du vet hvilken kjøretøyklasse resultatet blir, og hvilke regler som gjelder.</li>
+  <li>Ingen deler kommer fra delesparkesykler eller ukjente kilder.</li>
+</ul>
+</section>
+
+<section id="ai-hjelp">
+<h2>AI-hjelp: hva bør du måle nå?</h2>
+<p>En enkel veileder som går gjennom spørsmål og foreslår neste steg. Den kjører helt i nettleseren din, sender ingenting noe sted, og er ikke en «ekte» språkmodell. Den erstatter ikke manualen eller en fagperson.</p>
+<div id="hjelper" aria-live="polite">
+  <noscript>Veilederen trenger JavaScript. Resten av siden virker uten.</noscript>
+</div>
+</section>
+
+<section id="sikkerhet">
+<h2>Sikkerhet</h2>
+<ul>
+  <li>Litium-ion-batterier kan ta fyr, spesielt når de er skadet av slag, støt eller fukt, feil lader, dyputlading eller ekstrem temperatur. En brann kan utvikle seg eksplosivt med store mengder giftig gass.<sup><a href="#k13" aria-label="Kilde 13">[13]</a></sup></li>
+  <li>Lad når du er våken og til stede, med original eller produsentanbefalt lader, i rom med røykvarsler, aldri på soverom eller i rømningsvei.<sup><a href="#k13" aria-label="Kilde 13">[13]</a></sup> <sup><a href="#k14" aria-label="Kilde 14">[14]</a></sup></li>
+  <li>Avbryt lading ved rar lukt, knitring eller fresing, unormal varme, sprekker eller oppsvulming.<sup><a href="#k13" aria-label="Kilde 13">[13]</a></sup></li>
+  <li>Ved brann: ta laderen ut hvis det er trygt, kom deg ut og ring 110. Batteriet kan ta fyr igjen hvis det ikke kjøles ned.<sup><a href="#k14" aria-label="Kilde 14">[14]</a></sup></li>
+  <li>Skadde batterier leveres til gjenvinningsstasjon. Se <a href="https://sortere.no/">sortere.no</a> for hvor.<sup><a href="#k13" aria-label="Kilde 13">[13]</a></sup> DSB har eget faktaark om håndtering av skadde litiumbatterier.<sup><a href="#k15" aria-label="Kilde 15">[15]</a></sup></li>
+  <li>Branner og feil i batterier kan meldes til DSB på <a href="https://farligeprodukter.no/">farligeprodukter.no</a>.<sup><a href="#k13" aria-label="Kilde 13">[13]</a></sup></li>
+  <li>Kontrollere og batterier på 48 V og over gir gnister og kan gi brannskader ved kortslutning. Ta av ringer og klokke, og isoler alle skjøter med krympestrømpe.</li>
+  <li>Sjekk bremser og festing av styre og hjul før du kjører.</li>
+</ul>
+</section>
+
+<section id="lov">
+<h2>Regler i Norge (kort)</h2>
+<p>Dette er en forenklet oversikt, ikke juridisk rådgivning. Sjekk kildene.</p>
+<h3>Elsparkesykkel</h3>
+<ul>
+  <li>For å regnes som <em>liten elektrisk motorvogn</em> må den blant annet ha maks konstruktiv hastighet 20 km/t, veie maks 70 kg med batteri og være maks 85 cm bred og 120 cm lang.<sup><a href="#k17" aria-label="Kilde 17">[17]</a></sup></li>
+  <li>Kravet om fartssperre er ikke oppfylt hvis maksfarten kan endres med bryter, modus eller app.<sup><a href="#k16" aria-label="Kilde 16">[16]</a></sup></li>
+  <li>Oppfyller den ikke kravene, gjelder andre regler: blant annet registrering, forsikring og motorsykkelhjelm, og kjøring bare i veibanen.<sup><a href="#k16" aria-label="Kilde 16">[16]</a></sup></li>
+  <li>Alle elsparkesykler skal ha ansvarsforsikring, også privateide.<sup><a href="#k24" aria-label="Kilde 24">[24]</a></sup></li>
+  <li>Føreren er selv ansvarlig for at kjøretøyet oppfyller kravene.<sup><a href="#k16" aria-label="Kilde 16">[16]</a></sup> Bytter du display eller kontroller, er det altså du som må sørge for at sperren fortsatt virker.</li>
+</ul>
+<h3>Elsykkel</h3>
+<ul>
+  <li>Motoren skal bare hjelpe når du tråkker, koble ut ved 25 km/t og ha maks 0,25 kW nominell effekt. Ren motordrift er tillatt opp til 6 km/t.<sup><a href="#k18" aria-label="Kilde 18">[18]</a></sup></li>
+  <li>Over dette er den etter loven en moped, med krav om blant annet førerkort og hjelm.<sup><a href="#k18" aria-label="Kilde 18">[18]</a></sup></li>
+  <li>Displayer som KM529 lar deg endre fartsgrensen i menyen.<sup><a href="#k2" aria-label="Kilde 2">[2]</a></sup> Over 25 km/t gjelder moped-reglene.</li>
+</ul>
+<h3>Delesparkesykler</h3>
+<ul><li>Tilhører operatøren. Se <a href="#sparkesykler">over</a>.<sup><a href="#k19" aria-label="Kilde 19">[19]</a></sup> <sup><a href="#k20" aria-label="Kilde 20">[20]</a></sup></li></ul>
+</section>
+
+<section id="ordliste">
+<h2>Ordliste</h2>
+<dl>
+  <dt>BMS</dt><dd>Battery Management System. Kretsen i batteriet som passer på cellene og kutter ved feil.</dd>
+  <dt>Nominell spenning</dt><dd>«Navnet» på spenningen, for eksempel 36 V. Fulladet er den høyere (42 V for 10S).</dd>
+  <dt>10S, 13S, 14S</dt><dd>Antall celler (eller cellegrupper) i serie.</dd>
+  <dt>Kontroller</dt><dd>Boksen som styrer motoren ut fra gass, PAS og bremser.</dd>
+  <dt>Fase</dt><dd>De tre tykke ledningene som driver motoren.</dd>
+  <dt>Hallsensor</dt><dd>Sensorer i motoren som forteller kontrolleren hvor rotoren står. Fem tynne ledninger: 5 V, jord og tre signaler.</dd>
+  <dt>PAS</dt><dd>Pedal Assist Sensor. Merker at du tråkker.</dd>
+  <dt>Bremsekutt</dt><dd>Bryter i bremsehåndtaket som stopper motorkraften.</dd>
+  <dt>Protokoll</dt><dd>«Språket» display og kontroller bruker for å sende data til hverandre.</dd>
+  <dt>UART</dt><dd>Enkel seriell dataoverføring på to ledninger, TX (sender) og RX (mottar). TX på den ene kobles til RX på den andre.</dd>
+  <dt>CAN</dt><dd>En mer robust databuss brukt i noen nyere systemer.</dd>
+  <dt>Julet / Higo</dt><dd>Merker for runde, vanntette plugger brukt på elsykler.</dd>
+  <dt>VCC / GND</dt><dd>Strøm pluss / jord (minus).</dd>
+  <dt>Gjennomgangstest</dt><dd>Multimeterfunksjon som piper når det er forbindelse.</dd>
+  <dt>LiFePO4</dt><dd>Litium-jernfosfat. En annen battericelletype med lavere cellespenning. Trenger egen lader.</dd>
+  <dt>Sikring</dt><dd>Komponent som brenner av eller slår ut ved for høy strøm, slik at en kortslutning ikke blir til brann.</dd>
+  <dt>Forlading</dt><dd>Å lade opp kontrollerens kondensatorer gjennom en motstand før full tilkobling, for å unngå gnist.</dd>
+  <dt>VESC</dt><dd>Åpen motorkontroller som kan settes opp i detalj.</dd>
+</dl>
+</section>
+
+<section id="kilder">
+<h2>Kilder</h2>
+<p>Lenkene ble sjekket 19. november 2026. Engelske kilder er sammendratt på norsk. Merk kildetypen: offentlige kilder (Vegvesenet, Lovdata, DSB) og produsentmanualer veier tyngst. Forhandlersider og hobbyforum (Endless Sphere, GitHub-wikier) er nyttige, men ikke offisielle.</p>
+<ol class="sources">
+  <li id="k1">King-Meter: <a href="https://www.profibike.nl/experience/wp-content/uploads/2023/09/KM529-LCD-From-KING-METER.pdf">KM529-LCD User's Guide (PDF)</a></li>
+  <li id="k2">Tope Parts: <a href="https://topeparts.com/product/km529-lcd-display/">KM529 LCD Display, med manual og FAQ</a></li>
+  <li id="k3">Letrigo: <a href="https://letrigo.com/blogs/knowledge/ebike-display-wiring-explained">E-bike Display Wiring Explained</a></li>
+  <li id="k4">RideRow: <a href="https://riderow.com/pages/plug-guide">E-Bike Connector Guide: Julet, Higo, Bafang, SM and XT Plugs</a></li>
+  <li id="k5">eRowBike: <a href="https://erowbike.com/other_ebikes">Other (e)Bike Projects Encountered (Higo-pinner og nummerering)</a></li>
+  <li id="k6">sick.parts: <a href="https://sick.parts/products/julet-basic-waterproof-connector">Julet Basic Waterproof Connector Cable</a></li>
+  <li id="k7">Endless Sphere: <a href="https://endless-sphere.com/sphere/threads/kt-lcd5-display-controller-campatability.111557/">KT-LCD5 display controller compatibility</a></li>
+  <li id="k8">Endless Sphere: <a href="https://endless-sphere.com/sphere/threads/s-lcd-to-s12s-controller-communication-protocol-hacked.73471/">S-LCD to S12S controller communication protocol hacked</a></li>
+  <li id="k9">OpenSourceEBike: <a href="https://github.com/OpenSourceEBike/Kunteng_LCD3_firmware">Kunteng_LCD3_firmware</a></li>
+  <li id="k10">bbs-fw wiki: <a href="https://github.com/danielnilsson9/bbs-fw/wiki/Bafang-Display-Protocol">Bafang Display Protocol</a></li>
+  <li id="k11">etransport/ninebot-docs: <a href="https://github.com/etransport/ninebot-docs/wiki/protocol">Protocol (Xiaomi/Ninebot)</a></li>
+  <li id="k12">WXG Power: <a href="https://www.wxgpower.com/news/industry-news/48v-13s-vs-52v-14s-lithium-chargers-why-charging-voltages.html">48V (13S) vs 52V (14S) Lithium Chargers</a></li>
+  <li id="k13">DSB: <a href="https://www.dsb.no/brannsikkerhet/brannforebygging/rad-og-veiledning-om-elsparkesykler/">Råd og veiledning om elsparkesykler</a></li>
+  <li id="k14">DSB: <a href="https://www.dsb.no/sikkerhverdag/strom/ladevett-for-trygg-lading/">Ladevett for trygg lading</a></li>
+  <li id="k15">DSB: <a href="https://www.dsb.no/siteassets/rapporter-og-publikasjoner/faktaark/litiumbatterier-faktaark.pdf">Sikker håndtering av litiumbatterier som er defekte eller skadet (PDF)</a></li>
+  <li id="k16">Statens vegvesen: <a href="https://www.vegvesen.no/trafikkinformasjon/trafikksikkerhet/sikker-pa-elsparkesykkel/tekniske-krav/">Tekniske krav til elsparkesykler</a></li>
+  <li id="k17">Lovdata: <a href="https://lovdata.no/dokument/LTI/forskrift/2022-05-25-918">Forskrift om krav til liten elektrisk motorvogn</a></li>
+  <li id="k18">Statens vegvesen: <a href="https://www.vegvesen.no/trafikkinformasjon/trafikksikkerhet/sikker-pa-sykkel/tekniske-krav/">Tekniske krav til sykkel og elsykkel</a></li>
+  <li id="k19">Lovdata: <a href="https://lovdata.no/lov/2005-05-20-28/%C2%A7321">Straffeloven § 321 (tyveri)</a></li>
+  <li id="k20">Lovdata: <a href="https://lovdata.no/lov/2005-05-20-28/%C2%A7332">Straffeloven § 332 (heleri)</a></li>
+  <li id="k21">Voi: <a href="https://www.voi.com/blog/voiager-5">Meet Voiager 5</a></li>
+  <li id="k22">Sparke.no: <a href="https://sparke.no/hiley/">Hiley elsparkesykler</a></li>
+  <li id="k23">VESC Project: <a href="https://vesc-project.com/">vesc-project.com</a></li>
+  <li id="k24">Statens vegvesen: <a href="https://www.vegvesen.no/trafikkinformasjon/trafikksikkerhet/sikker-pa-elsparkesykkel/trafikkregler/">Trafikkregler for elsparkesykler</a></li>
+  <li id="k25">ub4raf: <a href="https://github.com/ub4raf/Ninebot-PROTOCOL/blob/master/ninebot.c">Ninebot-PROTOCOL (ninebot.c, pakker med 5A A5)</a></li>
+</ol>
+</section>
+</main>
+<footer>
+<p>Elsparke-deler er et hobbyprosjekt. Innholdet er laget så nøyaktig som mulig, men kan inneholde feil. Du bruker det på eget ansvar. Feil kan meldes som issue på GitHub.</p>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
